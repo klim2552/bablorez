@@ -14,6 +14,7 @@ from collections import deque
 from bisect import insort, bisect_left
 from itertools import islice
 
+#Функция расчета медианы
 def running_median_insort(seq, window_size):
     """Contributed by Peter Otten"""
     seq = iter(seq)
@@ -33,28 +34,31 @@ def running_median_insort(seq, window_size):
         result.append(s[m])
     return result
 
-
+#Выгрузка информации по финансовому инструменту
 data = pd.read_csv('AAPL.csv', delimiter=',', header=0)
-
 data.Date =  pd.to_datetime(data.Date)
 
+#Отклонение медианы
 delta = 5.
 
 num_of_pos = 3
 
-
+#Расчет скользящих медиан
 movemed_max = np.array(running_median_insort(np.array(data.High), 10))
 movemed_min = np.array(running_median_insort(np.array(data.Low), 10))
 
+#Отклонение медианы
 shift = np.ones(len(data.High))*delta
 
 movemed_mid = 1/2(movemed_max + movemed_min)
 
+#Построение графиков
 plt.figure()
 plt.plot(range(len(data.High)), movemed_max + shift, c='red')
 plt.plot(range(len(data.High)), data.Close, c='green')
 plt.plot(range(len(data.High)), movemed_min - shift, c='blue')
 
+#Блок расчета позиций
 openShort = []
 openLong = []
 
@@ -79,7 +83,7 @@ for i in range(len(openLong)):
         print('Impossible')
         break
     
-
+#Вывод значений
 print("----------------------------------------")
 print(openShort)
 print(openLong)
